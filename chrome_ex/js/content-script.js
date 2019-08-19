@@ -28,9 +28,14 @@ chrome.extension.onMessage.addListener(
             // 收到paste消息和之前抓取的值
             if (request.data) {
                 // 将值放入目标网页的id为input的输入框中
-                document.querySelector("body > div.tc-popup.add-addr > div.tc-popup-content > iframe").contentWindow.document.body.querySelector('#cndzkEntrance > div:nth-child(4) > div > div > textarea').value = request.data.dizhi;
-                document.querySelector("body > div.tc-popup.add-addr > div.tc-popup-content > iframe").contentWindow.document.body.querySelector('#fullName').value = request.data.shouhuoren;
-                document.querySelector("body > div.tc-popup.add-addr > div.tc-popup-content > iframe").contentWindow.document.body.querySelector('#mobile').value = request.data.shoujihao;
+                const changeValue = (element, value) => {
+                    const event = new Event('input', { bubbles: true });
+                    element.value = value;
+                    element.dispatchEvent(event);
+                };
+                changeValue(document.querySelector('#cndzkEntrance > div:nth-child(4) > div > div > textarea'), request.data.dizhi);
+                changeValue(document.querySelector('#fullName'), request.data.shouhuoren);
+                changeValue(document.querySelector('#mobile'), request.data.shoujihao);
                 sendResponse("OK");
             } else {
                 alert("No data");
@@ -39,10 +44,10 @@ chrome.extension.onMessage.addListener(
     }
 );
 
-$(document).ready(function() {
+window.onload = function() {
     // 点击查看
     var show = document.querySelector("#viewOrderMobile");
     if (show) {
         document.querySelector("#viewOrderMobile").click();
     }
-});
+};
